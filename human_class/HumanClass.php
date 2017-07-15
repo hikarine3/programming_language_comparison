@@ -1,4 +1,5 @@
 <?php
+namespace FirstClass\Example;
 class Human{
   private $name;
   private $sex;
@@ -16,7 +17,9 @@ class Human{
   }
 }
 
-$pro = new Human('FirstName LastName', 'Male');
-$pro->sayName();
-$pro->saySex();
+if ( !isset(debug_backtrace()[0]) ) {
+  $pro = new Human('FirstName LastName', 'Male');
+  $pro->sayName();
+  $pro->saySex();
+}
 
