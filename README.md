@@ -4,8 +4,9 @@ This repository contains the programs which is corresponding to the blog article
 
 This will ensure that following languages are covered for all.
 
-* JavaScript (ES6+)
+* JavaScript (node.js / ES6+)
 * Perl
+* PHP 7
 * Python 3
 
 For other languages, covering is not assured.
