@@ -1,6 +1,6 @@
-// go build hello_world 
+// go build hello_world.go
 package main
 import "fmt"
 func main() {
-    fmt.Println("hello world")
+    fmt.Println("Hello World")
 }

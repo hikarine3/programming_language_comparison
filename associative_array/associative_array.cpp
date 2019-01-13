@@ -1,4 +1,12 @@
 #include <iostream>
 #include <map>
 using namespace std;
-map<string, string> monArray = {{"1", "January"}, {"2", "February"}, {"3", "March"}};
+int main() {
+    map<string, string> monArray;
+    monArray["1"] = "January";
+    monArray["2"] = "February";
+    monArray["3"] = "March";
+    for (map<string, string>::iterator p = monArray.begin(); p != monArray.end(); ++p ) {
+         cout << p->second << endl;
+   }
+}

@@ -14,6 +14,7 @@ class ExecuteTest:
         asserted_num = 0
         for root, dirs, files in os.walk(self.dir):
             for file in files:
+                print(file)
                 if re.search(r"\.(c|cpp|cs|go|java|js|php|py|rb|sh)$", file) and not re.search("executeTest", file):
                     if file.endswith(".c"):
                         execute_file = file.replace(r".c", "")
@@ -52,7 +53,7 @@ class ExecuteTest:
                         else:
                             pass
                         execute_file = file.replace(r".go", "")
-                        cm = "go build " + root + "/" + file + "; go " + root + "/" + execute_file
+                        cm = "cd " + root + "; go build " + file + "; ./" + execute_file + ";cd .."
                     elif file.endswith(".java"):
                         execute_file = file.replace(r".java", "")
                         cm = "javac " + root + "/" + file + "; cd " + root + ";java " + execute_file
@@ -101,10 +102,13 @@ class ExecuteTest:
                     else:
                         pass
 
+                    if(re.search(r"array_printer", file)):
+                        assert result == "3\n1\n2\n"
+                        asserted_num += 1
                     if(re.search(r"doctor", file)):
                         assert re.search(r"My specialty is FirstName LastName", result), "Specialty wasn't shown."
                         asserted_num += 1
-                    if(re.search(r"dump", file)):
+                    elif(re.search(r"dump", file)):
                         months = ["January", "February", "March"]
                         for month in months:
                             assert re.search(month, result), "Dump result doesn't contain " + month
