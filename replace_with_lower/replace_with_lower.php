@@ -1,2 +1,3 @@
-$str="A-B-C";echo strtolower(preg_replace("/-/", "_", $str));
-
+<?php
+$str = "A-B-C";
+echo strtolower(preg_replace("/-/", "_", $str))."\n";

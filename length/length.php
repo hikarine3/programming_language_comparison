@@ -1,4 +1,3 @@
 <?php
 $str = "A-B-C";
-print length($str);
-
+print strlen($str)."\n";

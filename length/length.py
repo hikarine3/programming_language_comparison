@@ -1,3 +1,2 @@
-str = "A-B-C";
-print(len(str))
-
+exa = "A-B-C"
+print(str(len(exa)))

@@ -1,4 +1,4 @@
 use Data::Dump qw(dump);
-my $array = {1 => 'Janualry', 2 => 'Feburuary', 3 => 'March'};
+my $array = {1 => 'January', 2 => 'February', 3 => 'March'};
 print dump($array);
 

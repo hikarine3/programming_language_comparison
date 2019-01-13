@@ -1,15 +1,15 @@
 // javac -d . Human.java;
 // java jp.co.firstclass.Human;
 
-package jp.co.firstclass;
+// package jp.co.firstclass;
 
 public class Human {
     private String name;
     private String sex;
 
     public Human(String name, String sex){
-	this.name = name;
-	this.sex = sex;
+        this.name = name;
+        this.sex = sex;
     }
 
     public void sayName() {
@@ -22,7 +22,7 @@ public class Human {
 
     public static void main(String args[]) {
         Human human = new Human("FirstName LastName", "Male");
-	human.sayName();
-	human.saySex();
+        human.sayName();
+        human.saySex();
     }
 }
