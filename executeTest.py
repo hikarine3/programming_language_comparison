@@ -1,3 +1,4 @@
+# _num <= good habit
 import os
 import re
 import sys
@@ -11,11 +12,11 @@ class ExecuteTest:
 
     def executeTest(self):
         print("Find in " + self.dir)
-        asserted_num = 0
+        self.asserted_num = 0
         for root, dirs, files in os.walk(self.dir):
             for file in files:
                 print(file)
-                if re.search(r"\.(c|cpp|cs|go|java|js|php|py|rb|sh)$", file) and not re.search("executeTest", file):
+                if re.search(r"\.(c|cpp|cs|go|java|js|php|pl|py|rb|sh)$", file) and not re.search("executeTest", file):
                     if file.endswith(".c"):
                         execute_file = file.replace(r".c", "")
                         cm = "cc -o " + root + "/" + execute_file + " " + root + "/" + file +"; " + root + "/" + execute_file
@@ -102,28 +103,32 @@ class ExecuteTest:
                     else:
                         pass
 
-                    if(re.search(r"array_printer", file)):
+                    if(re.search(r"associative_array", root)):
+                        assert result == "January\nFebruary\nMarch\n"
+                        self.asserted_num += 1
+                    elif(re.search(r"array_printer", root)):
                         assert result == "3\n1\n2\n"
-                        asserted_num += 1
-                    if(re.search(r"doctor", file)):
+                        self.asserted_num += 1
+                    elif(re.search(r"doctor", root)):
                         assert re.search(r"My specialty is FirstName LastName", result), "Specialty wasn't shown."
-                        asserted_num += 1
-                    elif(re.search(r"dump", file)):
+                        self.asserted_num += 1
+                    elif(re.search(r"dump", root)):
                         months = ["January", "February", "March"]
                         for month in months:
                             assert re.search(month, result), "Dump result doesn't contain " + month
-                            asserted_num += 1
-                    elif(re.search(r"hello_world", file)):
+                            self.asserted_num += 1
+                    elif(re.search(r"hello_world", root)):
                         assert re.search("Hello World", result), "Hello world wasn't shown."
-                        asserted_num += 1
-                    elif(re.search(r"length", file)):
+                        self.asserted_num += 1
+                    elif(re.search(r"length", root)):
                         assert result == "5\n", "Returned length is different from expected one."
-                        asserted_num += 1
-                    elif(re.search(r"trim", file)):
+                        self.asserted_num += 1
+                    elif(re.search(r"trim", root)):
                         assert result == "aaa" or result == "aaa\n", "aaa wasn't shown."
-                        asserted_num += 1
+                        self.asserted_num += 1
     def reportTest(self):
         print("Report test result...")
+        print("Asserted: " + str(self.asserted_num))
 
     def createHtml(self):
         for file in self.file_contents:
