@@ -106,6 +106,15 @@ class ExecuteTest:
                     if(re.search(r"associative_array", root)):
                         assert result == "January\nFebruary\nMarch\n"
                         self.asserted_num += 1
+                    elif(re.search(r"lower", root)):
+                        assert result == "a\nb\nc\n"
+                        self.asserted_num += 1
+                    elif(re.search(r"max", root)):
+                        assert result == "3\n"
+                        self.asserted_num += 3
+                    elif(re.search(r"min", root)):
+                        assert result == "1\n"
+                        self.asserted_num += 1
                     elif(re.search(r"array_printer", root)):
                         assert result == "3\n1\n2\n"
                         self.asserted_num += 1
