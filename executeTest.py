@@ -106,6 +106,9 @@ class ExecuteTest:
                     if(re.search(r"associative_array", root)):
                         assert result == "January\nFebruary\nMarch\n"
                         self.asserted_num += 1
+                    elif(root == 'join'):
+                        assert result == "a,b,c\n"
+                        self.asserted_num += 1
                     elif(re.search(r"lower", root)):
                         assert result == "a\nb\nc\n"
                         self.asserted_num += 1
@@ -117,6 +120,11 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif(re.search(r"array_printer", root)):
                         assert result == "3\n1\n2\n"
+                    elif(re.search(r"ascend_sort_array", root)):
+                        assert result == "1\n2\n3\n"
+                        self.asserted_num += 1
+                    elif(re.search(r"descend_sort_array", root)):
+                        assert result == "3\n2\n1\n"
                         self.asserted_num += 1
                     elif(re.search(r"doctor", root)):
                         assert re.search(r"My specialty is FirstName LastName", result), "Specialty wasn't shown."
