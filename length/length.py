@@ -1,2 +1,5 @@
-exa = "A-B-C"
-print(str(len(exa)))
+example = "A-B-C"
+print(str(len(example)))
+
+array = [1, 2, 3]
+print(str(len(array)))

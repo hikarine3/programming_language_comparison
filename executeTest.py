@@ -138,7 +138,7 @@ class ExecuteTest:
                         assert re.search("Hello World", result), "Hello world wasn't shown."
                         self.asserted_num += 1
                     elif(re.search(r"length", root)):
-                        assert result == "5\n", "Returned length is different from expected one."
+                        assert result == "5\n3\n", "Returned length is different from expected one."
                         self.asserted_num += 1
                     elif(re.search(r"trim", root)):
                         assert result == "aaa" or result == "aaa\n", "aaa wasn't shown."
