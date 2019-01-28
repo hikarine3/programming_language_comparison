@@ -106,11 +106,11 @@ class ExecuteTest:
                     if(re.search(r"associative_array", root)):
                         assert result == "January\nFebruary\nMarch\n"
                         self.asserted_num += 1
+                    elif(root == 'defined'):
+                        assert result == "value is not defined\n"
+                        self.asserted_num += 1
                     elif(root == 'join'):
                         assert result == "a,b,c\n"
-                        self.asserted_num += 1
-                    elif(re.search(r"lower", root)):
-                        assert result == "a\nb\nc\n"
                         self.asserted_num += 1
                     elif(re.search(r"max", root)):
                         assert result == "3\n"
@@ -139,6 +139,12 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif(re.search(r"length", root)):
                         assert result == "5\n3\n", "Returned length is different from expected one."
+                        self.asserted_num += 1
+                    elif( root == "lower"):
+                        assert result == "abc\n"
+                        self.asserted_num += 1
+                    elif root == "lower_and_replace":
+                        assert result == "a_b_c\n"
                         self.asserted_num += 1
                     elif(re.search(r"trim", root)):
                         assert result == "aaa" or result == "aaa\n", "aaa wasn't shown."
