@@ -74,12 +74,14 @@ class ExecuteTest:
                         exit("not defied extention: " + file)
 
                     op = ""
-                    if re.search(r"argv\.", file):
+                    if re.search("argv\.", file):
+                        op = " -a -b -c"
+                    elif re.search(r"argv\.", file):
                         op = " argv1"
                     elif re.search(r"find\.", file):
                         op = "../find/subdir"
                     elif re.search("vertical2horizontal\.", file):
-                        op = "../vertical2horizontal/input.txt"
+                        op = "./vertical2horizontal/input.txt"
 
                     cm += " " + op
 
@@ -99,46 +101,52 @@ class ExecuteTest:
                         print(result)
                     except subprocess.CalledProcessError:
                         print("execution returned error.")
-                        continue
+                        sys.exit(1)
                     else:
                         pass
 
-                    if(re.search(r"associative_array", root)):
+                    if root == "argv":
+                        assert result == "-a\n-b\n-c\n"
+                        self.asserted_num += 1
+                    elif root == "associative_array":
                         assert result == "January\nFebruary\nMarch\n"
                         self.asserted_num += 1
-                    elif(root == 'defined'):
+                    elif root == 'defined':
                         assert result == "value is not defined\n"
                         self.asserted_num += 1
-                    elif(root == 'join'):
+                    elif root == 'join_array':
                         assert result == "a,b,c\n"
                         self.asserted_num += 1
-                    elif(re.search(r"max", root)):
+                    elif root == "max_in_array":
                         assert result == "3\n"
                         self.asserted_num += 3
-                    elif(re.search(r"min", root)):
+                    elif root == "min_in_array":
                         assert result == "1\n"
                         self.asserted_num += 1
-                    elif(re.search(r"array_printer", root)):
+                    elif root == "array_printer":
                         assert result == "3\n1\n2\n"
-                    elif(re.search(r"ascend_sort_array", root)):
+                    elif root == "ascend_sort_array":
                         assert result == "1\n2\n3\n"
                         self.asserted_num += 1
-                    elif(re.search(r"descend_sort_array", root)):
+                    elif root == "descend_sort_array":
                         assert result == "3\n2\n1\n"
                         self.asserted_num += 1
-                    elif(re.search(r"doctor", root)):
+                    elif root == "doctor_class":
                         assert re.search(r"My specialty is FirstName LastName", result), "Specialty wasn't shown."
                         self.asserted_num += 1
-                    elif(re.search(r"dump", root)):
+                    elif root == "dump":
                         months = ["January", "February", "March"]
                         for month in months:
                             assert re.search(month, result), "Dump result doesn't contain " + month
                             self.asserted_num += 1
-                    elif(re.search(r"hello_world", root)):
+                    elif root == "hello_world":
                         assert re.search("Hello World", result), "Hello world wasn't shown."
                         self.asserted_num += 1
-                    elif(re.search(r"length", root)):
-                        assert result == "5\n3\n", "Returned length is different from expected one."
+                    elif root == "length_string":
+                        assert result == "5\n", "Returned length is different from expected one."
+                        self.asserted_num += 1
+                    elif root == "length_array":
+                        assert result == "3\n", "Returned length is different from expected one."
                         self.asserted_num += 1
                     elif( root == "lower"):
                         assert result == "abc\n"
@@ -146,9 +154,17 @@ class ExecuteTest:
                     elif root == "lower_and_replace":
                         assert result == "a_b_c\n"
                         self.asserted_num += 1
-                    elif(re.search(r"trim", root)):
+                    elif root == "split_string":
+                        assert result == "a\nb\nc\n"
+                    elif root == "trim":
                         assert result == "aaa" or result == "aaa\n", "aaa wasn't shown."
                         self.asserted_num += 1
+                    elif root == "sort_associative_array":
+                        assert result == "1 => Janualry\n3 => March\n12 => December\n", "Result is not expected"
+                        self.asserted_num += 1
+                    else:
+                        assert "Test is not prepared for this"
+                        exit
     def reportTest(self):
         print("Report test result...")
         print("Asserted: " + str(self.asserted_num))

@@ -1,4 +1,4 @@
 import sys
 argvs = sys.argv 
-print(argvs[1])
-
+for item in sys.argv[1:]:
+    print(item)

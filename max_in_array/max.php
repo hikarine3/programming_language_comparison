@@ -1,3 +1,3 @@
 <?php
 $array = [3, 1, 2];
-print(max($array));
+print(max($array))."\n";

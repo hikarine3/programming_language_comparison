@@ -1,1 +1,3 @@
-print $ARGV[0];
+foreach my $argv (@ARGV) {
+    print $argv."\n";
+}

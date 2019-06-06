@@ -7,4 +7,4 @@ do
         max=${i}
     fi
 done
-echo $max"\n";
+echo $max;
