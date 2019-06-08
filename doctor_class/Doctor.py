@@ -4,7 +4,7 @@ from Human import Human
 
 class Doctor(Human):
 	def __init__(self, opt):
-		super(Doctor, self).__init__(opt)
+		super().__init__(opt)
 		self.specialty = opt["specialty"]
 
 	def saySpecialty(self):
