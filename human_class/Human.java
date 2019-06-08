@@ -1,15 +1,15 @@
 // javac -d . Human.java;
 // java jp.co.firstclass.Human;
-
 // package jp.co.firstclass;
+import java.util.*;
 
 public class Human {
     private String name;
     private String sex;
 
-    public Human(String name, String sex){
-        this.name = name;
-        this.sex = sex;
+    public Human(Map<String, String> opt){
+        this.name = opt.get("name");
+        this.sex = opt.get("sex");
     }
 
     public void sayName() {
@@ -21,7 +21,10 @@ public class Human {
     }
 
     public static void main(String args[]) {
-        Human human = new Human("FirstName LastName", "Male");
+        Map<String, String> opt = new HashMap<String, String>();
+        opt.put("name", "FirstName LastName");
+        opt.put("sex", "male");
+        Human human = new Human(opt);
         human.sayName();
         human.saySex();
     }

@@ -16,7 +16,7 @@ class ExecuteTest:
         for root, dirs, files in os.walk(self.dir):
             for file in files:
                 print(file)
-                if re.search(r"\.(c|cpp|cs|go|java|js|php|pl|py|rb|sh)$", file) and not re.search("executeTest", file):
+                if re.search(r"\.(c|cpp|cs|go|java|js|php|pl|pm|py|rb|sh)$", file) and not re.search("executeTest", file):
                     if file.endswith(".c"):
                         execute_file = file.replace(r".c", "")
                         cm = "cc -o " + root + "/" + execute_file + " " + root + "/" + file +"; " + root + "/" + execute_file
@@ -58,9 +58,9 @@ class ExecuteTest:
                     elif file.endswith(".java"):
                         execute_file = file.replace(r".java", "")
                         cm = "javac " + root + "/" + file + "; cd " + root + ";java " + execute_file
-                    elif file.endswith(".js"):
+                    elif file.endswith(".js") or file.endswith(".mjs"):
                         cm = "node " + root + "/" + file
-                    elif file.endswith(".pl"):
+                    elif file.endswith(".pl") or file.endswith(".pm"):
                         cm = "perl " + root + "/" + file
                     elif file.endswith(".php"):
                         cm = "php " + root + "/" + file
@@ -114,6 +114,12 @@ class ExecuteTest:
                     elif root == 'defined':
                         assert result == "value is not defined\n"
                         self.asserted_num += 1
+                    elif root == "doctor_class":
+                        assert result == "My name is FirstName LastName\nMy sex is male\nMy specialty is cardiology\n"
+                        self.asserted_num += 1
+                    elif root == 'human_class':
+                        assert result == "My name is FirstName LastName\nMy sex is male\n"
+                        self.asserted_num += 1
                     elif root == 'join_array':
                         assert result == "a,b,c\n"
                         self.asserted_num += 1
@@ -130,9 +136,6 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == "descend_sort_array":
                         assert result == "3\n2\n1\n"
-                        self.asserted_num += 1
-                    elif root == "doctor_class":
-                        assert re.search(r"My specialty is FirstName LastName", result), "Specialty wasn't shown."
                         self.asserted_num += 1
                     elif root == "dump":
                         months = ["January", "February", "March"]

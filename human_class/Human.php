@@ -1,11 +1,12 @@
 <?php
-namespace FirstClass\Example;
+namespace FirstClass\Example1;
+
 class Human{
   private $name;
   private $sex;
-  public function __construct($name, $sex){
-    $this->name = $name;
-    $this->sex = $sex;
+  public function __construct($opt){
+    $this->name = $opt["name"];
+    $this->sex = $opt["sex"];
   }
 
   public function sayName(){
@@ -18,8 +19,7 @@ class Human{
 }
 
 if ( !isset(debug_backtrace()[0]) ) {
-  $pro = new Human('FirstName LastName', 'Male');
+  $pro = new Human(["name" => "FirstName LastName", "sex" => "male"]);
   $pro->sayName();
   $pro->saySex();
 }
-

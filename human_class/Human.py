@@ -4,13 +4,13 @@ class Human:
 		self.sex = opt["sex"]
 
 	def sayName(self):
-		print(self.name)
+		print("My name is " + self.name)
 
 	def saySex(self):
-		print(self.sex)
+		print("My sex is " + self.sex)
 
 if __name__ == "__main__":
-	person1 = Human({"name":"First Last", "sex":"Male"})
+	person1 = Human({"name":"FirstName LastName", "sex":"male"})
 	person1.sayName()
 	person1.saySex()
 

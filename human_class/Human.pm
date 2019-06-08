@@ -27,7 +27,11 @@ sub saySex(){
   }
 }
 
-my $pro = new Human({'name' => 'FirstName LastName', 'sex' => 'Male'});
-$pro->sayName();
-$pro->saySex();
-
+if ($0 eq __FILE__) {
+  my $pro = new Human({'name' => 'FirstName LastName', 'sex' => 'male'});
+  $pro->sayName();
+  $pro->saySex();
+}
+else{
+  1;
+}
