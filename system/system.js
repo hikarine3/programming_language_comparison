@@ -1,2 +1,3 @@
 const execSync = require('child_process').execSync;
-console.log(execSync('date').toString());
+let result = execSync('date').toString();
+console.log(result);

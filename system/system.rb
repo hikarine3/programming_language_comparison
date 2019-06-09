@@ -1,1 +1,2 @@
-print(`date`)
+result = `date`
+print(result)
