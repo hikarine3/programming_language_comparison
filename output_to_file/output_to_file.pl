@@ -11,4 +11,3 @@ if (my $fh = new FileHandle($output_file)) {
   print <$fh>;
   $fh->close();
 }
-
