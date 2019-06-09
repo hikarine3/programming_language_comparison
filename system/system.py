@@ -1,2 +1,2 @@
 import subprocess
-print(subprocess.check_output(["ls"], shell=True).decode("UTF-8"))
+print(subprocess.check_output(["date"], shell=True).decode("UTF-8"))

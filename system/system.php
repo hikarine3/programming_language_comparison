@@ -1,3 +1,3 @@
 <?php
-system('ls', $rtn);
-print($rtn);
+exec('date', $rtn);
+print($rtn[0]."\n");

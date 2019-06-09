@@ -1,1 +1,1 @@
-print(`ls`);
+print(`date`);

@@ -172,6 +172,9 @@ class ExecuteTest:
                         assert result == "a\nb\nc\n"
                     elif root == "regex_match":
                         assert result == "Found target\n"
+                    elif root == "system":
+                        assert re.search(r"\d\d\d\d", result), "system wasn't executed correctly."
+                        self.asserted_num += 1
                     elif root == "trim":
                         assert result == "aaa" or result == "aaa\n", "aaa wasn't shown."
                         self.asserted_num += 1
