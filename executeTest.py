@@ -165,6 +165,9 @@ class ExecuteTest:
                     elif root == "lower_and_replace":
                         assert result == "a_b_c\n"
                         self.asserted_num += 1
+                    elif root == "trim":
+                        assert result == "aaa\n"
+                        self.asserted_num += 1
                     elif root == "split_string":
                         assert result == "a\nb\nc\n"
                     elif root == "regex_match":
