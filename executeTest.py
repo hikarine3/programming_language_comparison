@@ -9,14 +9,18 @@ class ExecuteTest:
         print("Intializing...")
         self.dir = opt["dir"]
         self.file_contents = {}
+        self.CLASSPATH = "./";
+        #:../doctor_class:../human_class;"
 
     def executeTest(self):
         print("Find in " + self.dir)
         self.asserted_num = 0
         for root, dirs, files in os.walk(self.dir):
+            root = root.rstrip("/")
             for file in files:
                 print(file)
                 if re.search(r"\.(c|cpp|cs|go|java|js|php|pl|pm|py|rb|sh)$", file) and not re.search("executeTest", file):
+                    cm = ""
                     if file.endswith(".c"):
                         execute_file = file.replace(r".c", "")
                         cm = "cc -o " + root + "/" + execute_file + " " + root + "/" + file +"; " + root + "/" + execute_file
@@ -57,7 +61,11 @@ class ExecuteTest:
                         cm = "cd " + root + "; go build " + file + "; ./" + execute_file + ";cd .."
                     elif file.endswith(".java"):
                         execute_file = file.replace(r".java", "")
-                        cm = "javac " + root + "/" + file + "; cd " + root + ";java " + execute_file
+                        if root == "doctor_class":
+                            cm = "cd human_class;javac Human.java;mv -f Human.class ../doctor_class;cd ..;"
+                        else:
+                            cm = ""
+                        cm += "cd " + root + ";javac " + file + "; java " + execute_file
                     elif file.endswith(".js") or file.endswith(".mjs"):
                         cm = "node " + root + "/" + file
                     elif file.endswith(".pl") or file.endswith(".pm"):
@@ -88,7 +96,7 @@ class ExecuteTest:
                     if file.endswith(".c") or file.endswith(".cpp") or file.endswith(".cs") or file.endswith(".go"):
                         cm += ";rm " + root + "/" + execute_file + ";"
                     elif file.endswith(".java"):
-                        cm += ";rm " + execute_file + ".class;cd ..;"
+                        cm += ";rm *.class;cd ..;"
 
                     fh = open(root + "/" + file, "r")
                     self.file_contents[file] = fh.read()
@@ -159,6 +167,8 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == "split_string":
                         assert result == "a\nb\nc\n"
+                    elif root == "regex_match":
+                        assert result == "Found target\n"
                     elif root == "trim":
                         assert result == "aaa" or result == "aaa\n", "aaa wasn't shown."
                         self.asserted_num += 1

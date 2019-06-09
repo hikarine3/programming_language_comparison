@@ -1,6 +1,3 @@
-// javac -d . Human.java;
-// java jp.co.firstclass.Human;
-// package jp.co.firstclass;
 import java.util.*;
 
 public class Human {
