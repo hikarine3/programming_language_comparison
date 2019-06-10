@@ -1,5 +1,5 @@
 import sys
-sys.path.append('./human_class')
+sys.path.append('../human_class')
 from Human import Human
 
 class Doctor(Human):

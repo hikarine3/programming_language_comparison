@@ -19,14 +19,14 @@ class ExecuteTest:
             root = root.rstrip("/")
             for file in files:
                 print(file)
-                if re.search(r"\.(c|cpp|cs|go|java|js|php|pl|pm|py|rb|sh)$", file) and not re.search("executeTest", file):
-                    cm = ""
+                if re.search(r"\.(c|cpp|cs|go|java|js|mjs|php|pl|pm|py|rb|sh)$", file) and not re.search("executeTest", file):
+                    cm = "cd " + root + ";"
                     if file.endswith(".c"):
                         execute_file = file.replace(r".c", "")
-                        cm = "cc -o " + root + "/" + execute_file + " " + root + "/" + file +"; " + root + "/" + execute_file
+                        cm += "cc -o " + execute_file + " " + file +"; " + execute_file
                     elif file.endswith(".cpp"):
                         execute_file = file.replace(r".cpp", "")
-                        cm = "g++ -o " + root + "/" + execute_file + " " + root + "/" + file +"; " + root + "/" + execute_file
+                        cm += "g++ -o " + execute_file + " " + file +"; " + execute_file
         #  mcs hello_world.cs;mono hello_world.exe;rm hello_world.exe;
                     elif file.endswith(".cs"):
                         # print(subprocess.check_output(["ls"], shell=True).decode("UTF-8"))
@@ -47,7 +47,7 @@ class ExecuteTest:
                             pass
                             
                         execute_file = file.replace(r".cs", ".exe")
-                        cm = "mcs " + root + "/" + file + "; mono " + root + "/" + execute_file
+                        cm += "mcs " + file + "; mono " + execute_file
                     elif file.endswith(".go"):
                         # print(subprocess.check_output(["ls"], shell=True).decode("UTF-8"))
                         try:
@@ -58,26 +58,28 @@ class ExecuteTest:
                         else:
                             pass
                         execute_file = file.replace(r".go", "")
-                        cm = "cd " + root + "; go build " + file + "; ./" + execute_file + ";cd .."
+                        cm += "go build " + file + "; ./" + execute_file
                     elif file.endswith(".java"):
                         execute_file = file.replace(r".java", "")
                         if root == "doctor_class":
-                            cm = "cd human_class;javac Human.java;mv -f Human.class ../doctor_class;cd ..;"
+                            cm += "cd ../human_class;javac Human.java;mv -f Human.class ../doctor_class;cd ../doctor_class;"
                         else:
-                            cm = ""
-                        cm += "cd " + root + ";javac " + file + "; java " + execute_file
-                    elif file.endswith(".js") or file.endswith(".mjs"):
-                        cm = "node " + root + "/" + file
+                            cm += ""
+                        cm += "javac " + file + "; java " + execute_file 
+                    elif file.endswith(".js"):
+                        cm += "node " + file
+                    elif file.endswith(".mjs"):
+                        cm += "node --experimental-modules " + file
                     elif file.endswith(".pl") or file.endswith(".pm"):
-                        cm = "perl " + root + "/" + file
+                        cm += "perl " + file
                     elif file.endswith(".php"):
-                        cm = "php " + root + "/" + file
+                        cm += "php " + file
                     elif file.endswith(".py"):
-                        cm = "python " + root + "/" + file
+                        cm += "python " + file
                     elif file.endswith(".rb"):
-                        cm = "ruby " + root + "/" + file
+                        cm += "ruby " + file
                     elif file.endswith(".sh"):
-                        cm = "chmod 755 " + root + "/" + file + ";" + root + "/" + file
+                        cm += "chmod 755 " + file + ";./" + file
                     else:
                         exit("not defied extention: " + file)
 
@@ -87,17 +89,20 @@ class ExecuteTest:
                     elif re.search(r"argv\.", file):
                         op = " argv1"
                     elif re.search(r"find\.", file):
-                        op = "../find/subdir"
+                        op = " subdir"
                     elif re.search("vertical2horizontal\.", file):
-                        op = "./vertical2horizontal/input.txt"
+                        op = " input.txt"
 
                     cm += " " + op
 
                     if file.endswith(".c") or file.endswith(".cpp") or file.endswith(".cs") or file.endswith(".go"):
-                        cm += ";rm " + root + "/" + execute_file + ";"
+                        cm += ";rm " + execute_file + ";"
                     elif file.endswith(".java"):
-                        cm += ";rm *.class;cd ..;"
+                        cm += ";rm *.class;"
+                    else:
+                        cm += ";"
 
+                    cm += "cd ..;"
                     fh = open(root + "/" + file, "r")
                     self.file_contents[file] = fh.read()
                     fh.close()

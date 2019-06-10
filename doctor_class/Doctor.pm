@@ -2,7 +2,8 @@ package Doctor;
 use strict;
 use Data::Dumper;
 use warnings;
-use lib './human_class';
+use File::Basename;
+use lib dirname(__FILE__).'/../human_class';
 use base qw(Human);
 
 sub new(){

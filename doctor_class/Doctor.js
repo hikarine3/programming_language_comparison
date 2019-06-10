@@ -1,5 +1,5 @@
-import Human from '../human_class/Human.mjs';
-export default class Doctor extends Human {
+const Human = require('../human_class/Human.js');
+class Doctor extends Human {
 	constructor(opt) {
 		super(opt);
         this.specialty = opt["specialty"];
@@ -9,6 +9,7 @@ export default class Doctor extends Human {
         console.log("My specialty is " + this.specialty);
     }
 }
+module.exports = Doctor;
 
 if(!module.parent) {
     let doctor1 = new Doctor({"name":"FirstName LastName", "sex":"male", "specialty":"cardiology"});

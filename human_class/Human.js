@@ -1,4 +1,4 @@
-export default class Human {
+class Human {
 	constructor(opt) {
 		this.name = opt["name"];
         this.sex = opt["sex"];
@@ -12,6 +12,7 @@ export default class Human {
 		console.log("My sex is " + this.sex);
     }
 };
+module.exports = Human;
 
 if(!module.parent) {
 	let human1 = new Human({"name":"FirstName LastName", "sex":"male"});
