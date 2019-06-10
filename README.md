@@ -3,7 +3,7 @@ This repository contains the programs which are shown on
 <a href="https://programminglang.com/">Programming languages comparison service</a>.
 
 Following languages are covering all cases.
-* JavaScript (node.js / ES6+)
+* JavaScript (node.js / ES5)
 * Perl
 * PHP 7
 * Python 3

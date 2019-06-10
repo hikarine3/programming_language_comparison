@@ -1,6 +1,6 @@
 <?php
 namespace FirstClass\Example2;
-require '../human_class/Human.php';
+require __DIR__. '/../human_class/Human.php';
 use FirstClass\Example1\Human;
 
 class Doctor extends Human{
