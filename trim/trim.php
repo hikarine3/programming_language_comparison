@@ -1,3 +1,3 @@
 <?php
-$a = "   aaa   ";
+$a = "   aaa   \n\t";
 print(trim($a)."\n");

@@ -1,4 +1,4 @@
-output_file = "/tmp/output_python.txt"
+output_file = "/tmp/output_ruby.txt"
 File.open(output_file, "w") do |wfh|
     wfh.puts("Hello World!\n")
 end

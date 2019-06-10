@@ -119,6 +119,9 @@ class ExecuteTest:
                     elif root == "associative_array":
                         assert result == "January\nFebruary\nMarch\n"
                         self.asserted_num += 1
+                    elif root == "crawl_yahoo_and_return_title":
+                        assert re.search(r"Yahoo", result), "Failed crawling"
+                        self.asserted_num += 1
                     elif root == 'defined':
                         assert result == "value is not defined\n"
                         self.asserted_num += 1
