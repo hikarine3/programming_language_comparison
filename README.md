@@ -1,19 +1,18 @@
 # programming_language_comparison
-This repository contains the programs which is corresponding to the blog article
-"<a href="https://en.sakuhindb.com/pe/Administrator/20170522.html">Comparison of Programming languages</a>".
+This repository contains the programs which are shown on 
+<a href="https://programminglang.com/">Programming languages comparison service</a>.
 
-This will ensure that following languages are covered for all.
-
+Following languages are covering all cases.
 * JavaScript (node.js / ES6+)
 * Perl
 * PHP 7
 * Python 3
+* Ruby
 
-For other languages, covering is not assured.
+Other languages are covering some of cases.
 * C
 * C++
 * C#
 * Go
 * Java
 * PHP
-* Ruby
