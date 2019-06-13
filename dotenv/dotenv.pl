@@ -5,7 +5,8 @@ if(my $fh = new FileHandle($envfile)) {
     while(<$fh>) {
         chomp;
         my $line = $_;
-        next if($line=~ m!^\#!);
+        $line=~ s!\#.*!!;
+        next unless $line;
         my ($key, $val) = split("=", $line);
         $val=~ s!^\"|\"\s*$!!gs;
         $ENV{$key} = $val;

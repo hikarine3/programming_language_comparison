@@ -16,6 +16,8 @@ class ExecuteTest:
         print("Find in " + self.dir)
         self.asserted_num = 0
         for root, dirs, files in os.walk(self.dir):
+            if re.search("/vendor/", root):
+                continue
             root = root.rstrip("/")
             for file in files:
                 print(file)
@@ -129,6 +131,9 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == 'defined':
                         assert result == "value is not defined\n"
+                        self.asserted_num += 1
+                    elif root == 'dotenv':
+                        assert result == "TEST\n"
                         self.asserted_num += 1
                     elif root == "doctor_class":
                         assert result == "My name is FirstName LastName\nMy sex is male\nMy specialty is cardiology\n"
