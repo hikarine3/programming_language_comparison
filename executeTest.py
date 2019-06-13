@@ -186,6 +186,9 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == "split_string":
                         assert result == "a\nb\nc\n"
+                    elif root == "rdb":
+                        assert re.search("\tN", result), "Result is not expected format"
+                        self.asserted_num += 1
                     elif root == "regex_match":
                         assert result == "Found target\n"
                     elif root == "system":
