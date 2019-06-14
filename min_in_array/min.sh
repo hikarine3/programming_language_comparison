@@ -7,4 +7,4 @@ do
         min=${i}
     fi
 done
-echo $min"\n";
+echo $min;

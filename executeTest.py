@@ -22,13 +22,14 @@ class ExecuteTest:
             for file in files:
                 print(file)
                 if re.search(r"\.(c|cpp|cs|go|java|js|mjs|php|pl|pm|py|rb|sh)$", file) and not re.search("executeTest", file):
+                    root = re.sub("^./", "", root)
                     cm = "cd " + root + ";"
                     if file.endswith(".c"):
                         execute_file = file.replace(r".c", "")
-                        cm += "cc -o " + execute_file + " " + file +"; " + execute_file
+                        cm += "cc -o " + execute_file + " " + file +"; ./" + execute_file
                     elif file.endswith(".cpp"):
                         execute_file = file.replace(r".cpp", "")
-                        cm += "g++ -o " + execute_file + " " + file +"; " + execute_file
+                        cm += "g++ -o " + execute_file + " " + file +"; ./" + execute_file
         #  mcs hello_world.cs;mono hello_world.exe;rm hello_world.exe;
                     elif file.endswith(".cs"):
                         # print(subprocess.check_output(["ls"], shell=True).decode("UTF-8"))
@@ -66,6 +67,7 @@ class ExecuteTest:
                         if root == "doctor_class":
                             cm += "cd ../human_class;javac Human.java;mv -f Human.class ../doctor_class;cd ../doctor_class;"
                         else:
+                            print("No=" + root)
                             cm += ""
                         cm += "javac " + file + "; java " + execute_file 
                     elif file.endswith(".js"):
