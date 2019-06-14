@@ -1,3 +1,4 @@
+.bash_profile
 .env
 node_modules
 __pycache__
