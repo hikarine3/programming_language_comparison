@@ -199,8 +199,17 @@ class ExecuteTest:
                     elif root == "trim":
                         assert result == "aaa" or result == "aaa\n", "aaa wasn't shown."
                         self.asserted_num += 1
-                    elif root == "sort_associative_array":
-                        assert result == "1 => Janualry\n3 => March\n12 => December\n", "Result is not expected"
+                    elif root == "sort_associative_array_by_key_ascend":
+                        assert result == "1 => January\n3 => March\n12 => December\n", "Result is not expected"
+                        self.asserted_num += 1
+                    elif root == "sort_associative_array_by_key_descend":
+                        assert result == "12 => December\n3 => March\n1 => January\n", "Result is not expected"
+                        self.asserted_num += 1
+                    elif root == "sort_associative_array_by_value_ascend":
+                        assert result == "January => 1\nMarch => 3\nDecember => 12\n", "Result is not expected"
+                        self.asserted_num += 1
+                    elif root == "sort_associative_array_by_value_descend":
+                        assert result == "December => 12\nMarch => 3\nJanuary => 1\n", "Result is not expected"
                         self.asserted_num += 1
                     else:
                         assert "Test is not prepared for this"
