@@ -1,4 +1,6 @@
 
+console.log(getCurrentDateTime());
+
 function getCurrentDateTime() {
   const date = new Date();
   const year = date.getFullYear();
@@ -24,4 +26,3 @@ function getCurrentDateTime() {
   }
   return [year, mon, mday].join("/") + " " + [hour, min, sec].join(":");
 }
-console.log(getCurrentDateTime());
