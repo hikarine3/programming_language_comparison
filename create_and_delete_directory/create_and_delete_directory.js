@@ -1,5 +1,5 @@
-let fs = require("fs");
-let fsExtra = require('fs-extra');
+const fs = require("fs");
+const fsExtra = require('fs-extra');
 const root_dir = './example_directoy';
 const lang_dir = 'js';
 const dirpath = [root_dir, lang_dir].join("/");

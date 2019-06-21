@@ -133,7 +133,10 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == "create_and_delete_directory":
                         assert re.search(r"Succeeded in removal of", result), "Failed mkdir / rmdir"
-                        self.asserted_num += 1                   
+                        self.asserted_num += 1
+                    elif root == "date_time":
+                        assert re.search(r"\d+/\d\d/\d\d \d\d:\d\d:\d\d", result), "Not date format"
+                        self.asserted_num += 1          
                     elif root == 'defined':
                         assert result == "value is not defined\n"
                         self.asserted_num += 1
