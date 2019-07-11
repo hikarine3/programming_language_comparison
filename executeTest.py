@@ -189,8 +189,11 @@ class ExecuteTest:
                     elif root == "trim":
                         assert result == "aaa\n"
                         self.asserted_num += 1
-                    elif root == "output_to_file":
-                        assert result == "Hello World!\n"
+                    elif root == "output_to_file_and_read_all":
+                        assert result == "Hello World!\nAdditional line\n"
+                        self.asserted_num += 1
+                    elif root == "output_to_file_and_read_lines":
+                        assert result == "Hello World!\n\nAdditional line\n3\n"
                         self.asserted_num += 1
                     elif root == "split_string":
                         assert result == "a\nb\nc\n"

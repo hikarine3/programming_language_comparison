@@ -1,3 +1,3 @@
 foreach my $argv (@ARGV) {
-    print $argv."\n";
+  print $argv."\n";
 }

@@ -1,6 +1,6 @@
 const fs = require('fs');
 let output_file = "/tmp/output_js.txt";
-fs.writeFile(output_file, "Hello World!\n", (err, resp) => {
+fs.writeFile(output_file, "Hello World!\nAdditional line\n", (err, resp) => {
     if (err) throw err;
     fs.readFile(output_file, (err, data) => {
 	if (err) throw err;
