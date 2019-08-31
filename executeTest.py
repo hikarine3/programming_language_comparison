@@ -128,6 +128,9 @@ class ExecuteTest:
                     elif root == "associative_array":
                         assert result == "January\nFebruary\nMarch\n"
                         self.asserted_num += 1
+                    elif root == "convert_charcode":
+                        assert result == "%BC%D6\n車\n"
+                        self.asserted_num += 1
                     elif root == "crawl_yahoo_and_return_title":
                         assert re.search(r"Yahoo", result), "Failed crawling"
                         self.asserted_num += 1
@@ -171,6 +174,9 @@ class ExecuteTest:
                         for month in months:
                             assert re.search(month, result), "Dump result doesn't contain " + month
                             self.asserted_num += 1
+                    elif root == "escape":
+                        assert result == "toyota%20%E8%BB%8A\n"
+                        self.asserted_num += 1
                     elif root == "hello_world":
                         assert re.search("Hello World", result), "Hello world wasn't shown."
                         self.asserted_num += 1
@@ -219,6 +225,9 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == "sort_associative_array_by_value_descend":
                         assert result == "December => 12\nMarch => 3\nJanuary => 1\n", "Result is not expected"
+                        self.asserted_num += 1
+                    elif root == "unescape":
+                        assert result == "toyota 車\n"
                         self.asserted_num += 1
                     else:
                         assert "Test is not prepared for this"

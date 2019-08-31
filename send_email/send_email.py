@@ -1,5 +1,8 @@
 import smtplib
-from email.message import EmailMessage
+from email.mime.text import MIMEText
+from email.header import Header
+from email import charset
+
 import re
 import sys
 
@@ -10,11 +13,12 @@ class Mailer:
     sys.exit(0)
 
   def __init__(self, opt):
+    self.debug = False
     self.smtp_server = "localhost"
     self.smtp_port = 25
     self.smtp_user = ""
     self.smtp_password = ""
-    if 'help in opt':
+    if 'help' in opt:
       self.help()
 
     if 'to_email' in opt:
@@ -36,6 +40,9 @@ class Mailer:
       self.cc = opt['cc']
     else:
       raise Exception("Please defined --cc=...")
+
+    if 'debug' in opt:
+      self.debug = 1
 
     if 'subject' in opt:
       self.subject = opt['subject']
@@ -60,20 +67,24 @@ class Mailer:
       raise Exception("Please defined --body=...")
 
   def send(self):
-    msg = "From: " + self.from_email + "\r\n" + "To: " + self.to_email + "\r\n"
+    cset = 'utf8'
+    msg = MIMEText(self.body, 'plain', cset)
     if self.bcc:
-      msg += "BCC: " + self.bcc + "\r\n"
+      msg['Bcc'] = self.bcc
     if self.cc:
-      msg += "CC: " + self.cc + "\r\n"
-    msg += "Subject: " + self.subject + "\r\n"
-    msg += self.body
+      msg['Cc'] = self.cc
+    msg['Subject'] = Header(self.subject, cset)
+    msg['From'] = self.from_email
+    msg['To'] = self.to_email
 
     try:
       server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+      if self.debug:
+        server.set_debuglevel(1)
       if self.smtp_user and self.smtp_password:
         server.starttls()
         server.login(self.smtp_user, self.smtp_password)
-      server.sendmail(self.from_email, self.to_email, msg)
+      server.sendmail(self.from_email, [self.to_email], msg.as_string())
       server.quit()
       print("Sent email")
     except:
