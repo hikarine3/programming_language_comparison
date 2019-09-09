@@ -92,6 +92,8 @@ class ExecuteTest:
                         op = " -a -b -c"
                     elif re.search(r"argv\.", file):
                         op = " argv1"
+                    elif re.search("recursively_list_files", file):
+                        op = " example_dir1"
                     elif re.search(r"find\.", file):
                         op = " subdir"
                     elif re.search("vertical2horizontal\.", file):
@@ -203,8 +205,20 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == "split_string":
                         assert result == "a\nb\nc\n"
-                    elif root == "rdb":
+                    elif root == "mysql":
                         assert re.search("\tN", result), "Result is not expected format"
+                        self.asserted_num += 1
+                    elif root == "recursively_list_files":
+                        files = result.split("\n")
+                        bad = 0
+                        checked_file = 0
+                        for file in files:
+                            if file:
+                                if not re.search(r"example_dir\d/\d\.txt$", file):
+                                    bad += 1
+                                else:
+                                    checked_file += 1
+                        assert bad == 0 or checked_file != 4, "unexpected result"
                         self.asserted_num += 1
                     elif root == "regex_match":
                         assert result == "Found target\n"

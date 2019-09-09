@@ -1,6 +1,8 @@
 use File::Find;
-my $dir = $ARGV[0] ||  '.';
+my $dir = $ARGV[0] || '/.';
 my $wanted = sub {
-  print $_."\n";
-}
-&find($dir, $wanted);
+  if(-f $_) {
+    print $File::Find::name."\n";
+  }
+};
+&find($wanted, $dir, );
