@@ -1,4 +1,4 @@
-package Rdb;
+package MySQL;
 use DBI;
 use Dotenv;
 
@@ -31,7 +31,7 @@ sub showSystemUsers(){
 }
 
 if ($0 eq __FILE__) {
-  my $rdb = new Rdb();
+  my $rdb = new MySQL();
   $rdb->dbconnect();
   $rdb->showSystemUsers();
   $rdb->dbclose();

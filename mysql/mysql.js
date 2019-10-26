@@ -1,4 +1,4 @@
-class Rdb {
+class MySQL {
 	constructor(opt={}) {
     this.mysql = require('mysql');
     require('dotenv').config();
@@ -36,10 +36,10 @@ class Rdb {
     });
   }
 };
-module.exports = Rdb;
+module.exports = MySQL;
 
 if(!module.parent) {
-	let rdb = new Rdb();
+	let rdb = new MySQL();
 	rdb.dbconnect();
   rdb.showSytemUsers();
   rdb.dbclose();

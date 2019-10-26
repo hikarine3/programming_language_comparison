@@ -1,7 +1,7 @@
 require 'dotenv'
 require 'mysql2'
 
-class Rdb
+class MySQL
   def initialize(opt=[])
     Dotenv.load(
       File.join(File.dirname(File.expand_path(__FILE__)), '.env')
@@ -25,7 +25,7 @@ class Rdb
 end
 
 if $0 == __FILE__
-  rdb = Rdb.new()
+  rdb = MySQL.new()
   rdb.dbconnect()
   rdb.showSystemUsers()
   rdb.dbclose()

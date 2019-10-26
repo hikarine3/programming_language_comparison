@@ -2,7 +2,7 @@ from firstclass_dotenv import Dotenv
 import mysql.connector
 import os
 
-class Rdb():
+class MySQL():
   def __init__(self, opt=[]):
     dotenv = Dotenv()
     dotenv.load()
@@ -22,7 +22,7 @@ class Rdb():
     self.mdbh.close()
 
 if __name__ == "__main__":
-  rdb = Rdb()
+  rdb = MySQL()
   rdb.dbconnect()
   rdb.showSystemUsers()
   rdb.dbclose()
