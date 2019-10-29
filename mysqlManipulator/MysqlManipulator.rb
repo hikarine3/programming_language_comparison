@@ -1,7 +1,7 @@
 require 'dotenv'
-require 'pg'
+require 'mysql2'
 
-class Psql
+class MysqlManipulator
   def initialize(opt=[])
     Dotenv.load(
       File.join(File.dirname(File.expand_path(__FILE__)), '.env')
@@ -11,10 +11,8 @@ class Psql
   def dbconnect
     dbname = "example"
     timezone = "Asia/Tokyo"
-    @rdbh = PG::connect(:host => ENV["DBHOST"], :user => ENV["DBUSER"], :password => ENV["DBPASSWORD"], :dbname => dbname)
-    sql = "SET client_min_messages = 'error'"
-    @rdbh.query(sql)
-    sql = "SET TIME ZONE '"+ timezone + "'"
+    @rdbh = Mysql2::Client.new(:host => ENV["DBHOST"], :username => ENV["DBUSER"], :password => ENV["DBPASSWORD"], :database => dbname)
+    sql = "SET TIME_ZONE = '"+ timezone + "'"
     @rdbh.query(sql)
   end
 
@@ -23,24 +21,19 @@ class Psql
     executeSQL(sql)
   end
 
-  def createExampleType
-    sql = "CREATE TYPE example_sex AS ENUM ('male', 'female')"
-    executeSQL(sql)
-  end
-
   def createExampleTable
     sql = '''
 CREATE TABLE example (
-  id SERIAL NOT NULL,
+  id int NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
-  sex example_sex DEFAULT NULL,
-  created_at timestamp with time zone DEFAULT NOW(),
-  updated_at timestamp with time zone DEFAULT NOW(),
-  PRIMARY KEY (id)
+  sex ENUM("male", "female") DEFAULT NULL,
+  created_at timestamp NOT NULL DEFAULT NOW(),
+  updated_at timestamp NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (id),
+  KEY created_at_idx (created_at),
+  KEY name_idx (name),
+  KEY updated_at_idx (updated_at)
 );
-CREATE INDEX created_at_idx ON example(created_at);
-CREATE INDEX name_idx ON example(name);
-CREATE INDEX updated_at_idx ON example(updated_at);
 '''
     executeSQL(sql)
   end
@@ -50,8 +43,9 @@ CREATE INDEX updated_at_idx ON example(updated_at);
       ['name1', 'male'],
       ['name2', 'female']
     ]
+    sth = @rdbh.prepare("INSERT INTO example (name, sex) VALUES (?, ?)")
     datas.each do |data|
-      @rdbh.exec_params("INSERT INTO example (name, sex) VALUES ($1, $2)", [data[0], data[1]])
+      sth.execute(data[0], data[1])
     end
   end
 
@@ -64,13 +58,8 @@ CREATE INDEX updated_at_idx ON example(updated_at);
     executeSQL(sql)
   end
 
-  def dropExampleType
-    sql = "DROP TYPE IF EXISTS example_sex"
-    executeSQL(sql)
-  end
-
   def endTransaction
-    sql = "END"
+    sql = "COMMIT"
     @rdbh.query(sql)
   end
 
@@ -79,7 +68,7 @@ CREATE INDEX updated_at_idx ON example(updated_at);
   end
 
   def selectFromExampleTable
-    sql = "SELECT id, name, sex, to_char(created_at, 'YYYY/MM/DD HH24:MI:SS') AS created_at, to_char(updated_at, 'YYYY/MM/DD HH24:MI:SS') AS updated_at FROM example"
+    sql = "SELECT id, name, sex, DATE_FORMAT(created_at, '%Y/%m/%d %H:%i:%S') AS created_at, DATE_FORMAT(updated_at, '%Y/%m/%d %H:%i:%S') AS updated_at FROM example"
     results = @rdbh.query(sql)
     results.each do |row|
       print([row["id"], row['name'], row['sex'], row['created_at'], row['updated_at']].join("\t") + "\n")
@@ -88,7 +77,7 @@ CREATE INDEX updated_at_idx ON example(updated_at);
 end
 
 if $0 == __FILE__
-  rdb = Psql.new()
+  rdb = MysqlManipulator.new()
   begin
     rdb.dbconnect()
   rescue => err
@@ -100,13 +89,10 @@ if $0 == __FILE__
     rdb.beginTransaction()
     begin
       rdb.dropExampleTable()
-      rdb.dropExampleType()
-      rdb.createExampleType()
       rdb.createExampleTable()
       rdb.createExampleData()
       rdb.selectFromExampleTable()
       rdb.dropExampleTable()
-      rdb.dropExampleType()
       rdb.endTransaction()
     rescue => err
       puts("Automatically roll backed.")

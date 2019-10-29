@@ -205,11 +205,11 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == "split_string":
                         assert result == "a\nb\nc\n"
-                    elif root == "mysql":
-                        assert re.search("\tN", result), "Result is not expected format"
+                    elif root == "mysqlManipulator":
+                        assert re.search(r"1\tname1\tmale\t\d+/\d+/\d+ \d+:\d+:\d+\t\d+/\d+/\d+ \d+:\d+:\d+\n2\tname2\tfemale\t\d+/\d+/\d+ \d+:\d+:\d+\t\d+/\d+/\d+ \d+:\d+:\d+$", result), "Result is not expected format"
                         self.asserted_num += 1
-                    elif root == "psql":
-                        assert re.search(r"1\tname1\tmale\t\d+/\d+/\d+ \d+:\d+:\d+	\d+/\d+/\d+ \d+:\d+:\d+\n2\tname2\tfemale\t\d+/\d+/\d+ \d+:\d+:\d+\t\d+/\d+/\d+ \d+:\d+:\d+$", result), "Result is not expected format"
+                    elif root == "psqlManipulator":
+                        assert re.search(r"1\tname1\tmale\t\d+/\d+/\d+ \d+:\d+:\d+\t\d+/\d+/\d+ \d+:\d+:\d+\n2\tname2\tfemale\t\d+/\d+/\d+ \d+:\d+:\d+\t\d+/\d+/\d+ \d+:\d+:\d+$", result), "Result is not expected format"
                         self.asserted_num += 1
                     elif root == "recursively_list_files":
                         files = result.split("\n")

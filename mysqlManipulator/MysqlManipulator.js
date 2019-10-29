@@ -1,14 +1,13 @@
-class Psql {
+class MysqlManipulator {
 	constructor(opt={}) {
-    const { Pool, Client } = require('pg');
+    this.mysql = require('mysql');
     require('dotenv').config();
-    this.rdbh = new Client({
+    this.rdbh = this.mysql.createConnection({
       host: process.env.DBHOST,
-      port: 5432,
       user: process.env.DBUSER,
       password: process.env.DBPASSWORD,
       database: 'example'
-    })
+    });
   }
 
   async beginTransaction() {
@@ -20,35 +19,25 @@ class Psql {
     const datas = [
       ['name1', 'male'],
       ['name2', 'female']
-    ];
+    ]
+    const sql = 'INSERT INTO example (name, sex) VALUES (?, ?)'
     for (const data of datas) {
-      const query = {
-        text: 'INSERT INTO example (name, sex) VALUES ($1, $2)',
-        values: [data[0], data[1]]
-      }
-      await this.executeSQL(query);
+      const res = await this.rdbh.query(sql, data)
     }
   }
 
   async createExampleTable() {
-    const sql = `
-    CREATE TABLE example (
-      id SERIAL NOT NULL,
+    const sql = `CREATE TABLE example (
+      id int NOT NULL AUTO_INCREMENT,
       name VARCHAR(255) NOT NULL,
-      sex example_sex DEFAULT NULL,
-      created_at timestamp with time zone DEFAULT NOW(),
-      updated_at timestamp with time zone DEFAULT NOW(),
-      PRIMARY KEY (id)
-    );
-    CREATE INDEX created_at_idx ON example(created_at);
-    CREATE INDEX name_idx ON example(name);
-    CREATE INDEX updated_at_idx ON example(updated_at);
-    `;
-    await this.executeSQL(sql);
-  }
-
-  async createExampleType() {
-    const sql = "CREATE TYPE example_sex AS ENUM ('male', 'female')";
+      sex ENUM('male', 'female') DEFAULT NULL,
+      created_at timestamp NOT NULL DEFAULT NOW(),
+      updated_at timestamp NOT NULL DEFAULT NOW(),
+      PRIMARY KEY (id),
+      KEY created_at_idx (created_at),
+      KEY name_idx (name),
+      KEY updated_at_idx (updated_at)
+    );`;
     await this.executeSQL(sql);
   }
 
@@ -61,7 +50,7 @@ class Psql {
 	async dbconnect() {
     await this.rdbh.connect();
     const timezone = "Asia/Tokyo";
-    const sql = "SET TIME ZONE '"+ timezone +"'"
+    const sql = "SET TIME_ZONE = '"+ timezone +"'"
     await this.executeSQL(sql)
   }
 
@@ -70,14 +59,8 @@ class Psql {
     await this.executeSQL(sql);
   }
 
-  async dropExampleType() {
-    const sql = "DROP TYPE IF EXISTS example_sex";
-    await this.executeSQL(sql);
-  }
-
   async endTransaction() {
-    const sql = "END"
-    await this.executeSQL(sql)
+    await this.rdbh.commit()
   }
 
   async executeSQL(sql) {
@@ -92,12 +75,16 @@ class Psql {
   }
 
   async selectFromExampleTable() {
-    const sql = "SELECT id, name, sex, to_char(created_at, 'YYYY/MM/DD HH24:MI:SS') AS created_at, to_char(updated_at, 'YYYY/MM/DD HH24:MI:SS') AS updated_at FROM example";
+    const sql = "SELECT id, name, sex, DATE_FORMAT(created_at, '%Y/%m/%d %H:%i:%S') AS created_at, DATE_FORMAT(updated_at, '%Y/%m/%d %H:%i:%S') AS updated_at FROM example";
     try {
-      const res = await this.rdbh.query(sql)
-      for(const row of res.rows){
-        console.log([row.id, row.name, row.sex, row.created_at, row.updated_at].join("\t"))
-      }
+      await this.rdbh.query(sql, function (err, rows, fields) {
+        if (err) { 
+          console.log('err: ' + err);
+        }
+        for(const row of rows){
+          console.log([row.id, row.name, row.sex, row.created_at, row.updated_at].join("\t"))
+        }
+      });
     }
     catch(err) {
       const sql = "ROLLBACK"
@@ -107,21 +94,18 @@ class Psql {
     }
   }
 };
-module.exports = Psql;
+module.exports = MysqlManipulator;
 
 if(!module.parent) {
   (async () => {
-    const rdb = new Psql()
+    const rdb = new MysqlManipulator()
     await rdb.dbconnect()
     await rdb.beginTransaction()
     await rdb.dropExampleTable()
-    await rdb.dropExampleType()
-    await rdb.createExampleType()
     await rdb.createExampleTable()
     await rdb.createExampleData()
     await rdb.selectFromExampleTable()
     await rdb.dropExampleTable()
-    await rdb.dropExampleType()
     await rdb.endTransaction()
     await rdb.dbclose()
   })()

@@ -1,4 +1,4 @@
-package Psql;
+package PsqlManipulator;
 use strict;
 use DBI;
 use Dotenv;
@@ -13,6 +13,19 @@ sub beginTransaction(){
   my $self = shift;
   my $sql = "BEGIN";
   $self->executeSQL($sql);
+}
+
+sub createExampleData(){
+  my $self = shift;
+  my @datas = (
+    ['name1', 'male'],
+    ['name2', 'female']
+  );
+  my $sth = $self->{'rdbh'}->prepare("INSERT INTO example (name, sex) VALUES (?, ?)");
+  foreach my $data_ref (@datas) {
+    $sth->execute($data_ref->[0], $data_ref->[1]);
+  }
+  $sth->finish();
 }
 
 sub createExampleTable() {
@@ -39,17 +52,9 @@ sub createExampleType() {
   $self->executeSQL($sql);
 }
 
-sub createExampleData(){
+sub dbclose(){
   my $self = shift;
-  my @datas = (
-    ['name1', 'male'],
-    ['name2', 'female']
-  );
-  my $sth = $self->{'rdbh'}->prepare("INSERT INTO example (name, sex) VALUES (?, ?)");
-  foreach my $data_ref (@datas) {
-    $sth->execute($data_ref->[0], $data_ref->[1]);
-  }
-  $sth->finish();
+  $self->{'rdbh'}->disconnect();
 }
 
 sub dbconnect(){
@@ -62,17 +67,6 @@ sub dbconnect(){
    PrintWarn => 0
    }) or die "Failed to connect to db.";
   my $sql = "SET TIME ZONE '".$timezone."'";
-  $self->{'rdbh'}->do($sql);
-}
-
-sub dbclose(){
-  my $self = shift;
-  $self->{'rdbh'}->disconnect();
-}
-
-sub executeSQL(){
-  my $self = shift;
-  my $sql = shift;
   $self->{'rdbh'}->do($sql);
 }
 
@@ -93,11 +87,17 @@ sub endTransaction(){
   $self->{'rdbh'}->commit();
 }
 
+sub executeSQL(){
+  my $self = shift;
+  my $sql = shift;
+  $self->{'rdbh'}->do($sql) or die("Failed to execute ".$sql);
+}
+
 sub selectFromExampleTable(){
   my $self = shift;
   my $sql = "SELECT id, name, sex, to_char(created_at, 'YYYY/MM/DD HH24:MI:SS') AS created_at, to_char(updated_at, 'YYYY/MM/DD HH24:MI:SS') AS updated_at FROM example";
-  my $sth = $self->{'rdbh'}->prepare($sql);
-  $sth->execute();
+  my $sth = $self->{'rdbh'}->prepare($sql) or die("Failed to prepare ".$sql);
+  $sth->execute() or die("Failed to execute ".$sql);
   while(my $row_ref = $sth->fetchrow_hashref) {
     print(join("\t", $row_ref->{'id'}, $row_ref->{'name'}, $row_ref->{'sex'}, $row_ref->{'created_at'}, $row_ref->{'updated_at'})."\n");
   }
@@ -105,7 +105,7 @@ sub selectFromExampleTable(){
 }
 
 if ($0 eq __FILE__) {
-  my $rdb = new Psql();
+  my $rdb = new PsqlManipulator();
   $rdb->dbconnect();
   $rdb->beginTransaction();
   $rdb->dropExampleTable();

@@ -2,7 +2,7 @@ from firstclass_dotenv import Dotenv
 import psycopg2
 import os
 
-class Psql():
+class PsqlManipulator():
   def __init__(self, opt=[]):
     dotenv = Dotenv()
     dotenv.load()
@@ -46,7 +46,7 @@ CREATE INDEX updated_at_idx ON example(updated_at);
   def dbconnect(self):
     dbname = "example"
     timezone = "Asia/Tokyo"
-    self.rdbh = psycopg2.connect("host=" + os.environ['DBHOST'] +" port=5432 dbname=" + dbname + " user="+ os.environ['DBUSER'] + " password=" + os.environ['DBPASSWORD'])
+    self.rdbh = psycopg2.connect("host=" + os.environ['DBHOST'] +" dbname=" + dbname + " user="+ os.environ['DBUSER'] + " password=" + os.environ['DBPASSWORD'])
     self.executeSQL("SET TIME ZONE '"+ timezone + "'")
 
   def dropExampleTable(self):
@@ -75,7 +75,7 @@ CREATE INDEX updated_at_idx ON example(updated_at);
         print("\t".join([str(id), name, sex, str(created_at), str(updated_at)]))
 
 if __name__ == "__main__":
-  psql = Psql()
+  psql = PsqlManipulator()
   psql.dbconnect()
   try:
     psql.beginTransaction()

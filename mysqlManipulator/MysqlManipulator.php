@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-class Psql {
+class MysqlManipulator {
   private $rdbh;
   public function __construct($opt=[]) {
     $dotenv = Dotenv\Dotenv::create(__DIR__);
@@ -10,32 +10,6 @@ class Psql {
 
   function beginTransaction() {
     $this->rdbh->beginTransaction();
-  }
-
-  function commit() {
-    $this->rdbh->commit();
-  }
-
-  function createExampleType(){
-    $sql = "CREATE TYPE example_sex AS ENUM ('male', 'female')";
-    $this->executeSQL($sql);
-  }
-
-  function createExampleTable(){
-    $sql =  <<< EOF
-CREATE TABLE example (
-  id SERIAL NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  sex example_sex DEFAULT NULL,
-  created_at timestamp with time zone DEFAULT NOW(),
-  updated_at timestamp with time zone DEFAULT NOW(),
-  PRIMARY KEY (id)
-);
-CREATE INDEX created_at_idx ON example(created_at);
-CREATE INDEX name_idx ON example(name);
-CREATE INDEX updated_at_idx ON example(updated_at);
-EOF;
-    $this->executeSQL($sql);
   }
 
   function createExampleData(){
@@ -50,6 +24,23 @@ EOF;
     }
   }
 
+  function createExampleTable(){
+    $sql =  <<< EOF
+CREATE TABLE example (
+  id int NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  sex ENUM('male', 'female') DEFAULT NULL,
+  created_at timestamp NOT NULL DEFAULT NOW(),
+  updated_at timestamp NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (id),
+  KEY `created_at_idx` (`created_at`),
+  KEY `name_idx` (`name`),
+  KEY `updated_at_idx` (`updated_at`)
+);
+EOF;
+    $this->executeSQL($sql);
+  }
+
   function dbclose() {
     $this->rdbh = null;
   }
@@ -58,23 +49,18 @@ EOF;
     $dbname = "example";
     $timezone = "Asia/Tokyo";
     try {
-      $this->rdbh = new PDO('pgsql:dbname=example;host='.getenv('DBHOST'), getenv('DBUSER'), getenv('DBPASSWORD'));
+      $this->rdbh = new PDO('mysql:dbname='.$dbname.';host='.getenv('DBHOST'), getenv('DBUSER'), getenv('DBPASSWORD'));
       $this->rdbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
     catch (PDOException $e) {
       die("Failed to connect: ".$e->getMessage());
     }
-    $sql = "SET TIME ZONE '".$timezone."'";
+    $sql = "SET TIME_ZONE = '".$timezone."'";
     $this->executeSQL($sql);
   }
 
   function dropExampleTable() {
     $sql = "DROP TABLE IF EXISTS example";
-    $this->executeSQL($sql);
-  }
-
-  function dropExampleType(){
-    $sql = "DROP TYPE IF EXISTS example_sex";
     $this->executeSQL($sql);
   }
 
@@ -93,7 +79,7 @@ EOF;
   }
   
   function selectFromExampleTable(){
-    $sql = "SELECT id, name, sex, to_char(created_at, 'YYYY/MM/DD HH24:MI:SS') AS created_at, to_char(updated_at, 'YYYY/MM/DD HH24:MI:SS') AS updated_at FROM example";
+    $sql = "SELECT id, name, sex, DATE_FORMAT(created_at, '%Y/%m/%d %H:%i:%S') AS created_at, DATE_FORMAT(updated_at, '%Y/%m/%d %H:%i:%S') AS updated_at FROM example";
     $sth = $this->rdbh->prepare($sql);
     $sth->execute();
     while($row = $sth->fetch(PDO::FETCH_ASSOC)){
@@ -103,7 +89,7 @@ EOF;
 }
 
 if ( !isset(debug_backtrace()[0]) ) {
-  $rdb = new Psql();
+  $rdb = new MysqlManipulator();
   try{
     $rdb->dbconnect();
   } catch(PDOException $e){
@@ -118,15 +104,13 @@ if ( !isset(debug_backtrace()[0]) ) {
     $rdb->dbclose();
     exit(1);
   }
+
   try {
     $rdb->dropExampleTable();
-    $rdb->dropExampleType();
-    $rdb->createExampleType();
     $rdb->createExampleTable();
     $rdb->createExampleData();
     $rdb->selectFromExampleTable();
     $rdb->dropExampleTable();
-    $rdb->dropExampleType();
     $rdb->endTransaction();
     $rdb->dbclose();
   } catch(PDOException $e){
