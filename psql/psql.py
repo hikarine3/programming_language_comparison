@@ -7,23 +7,29 @@ class Psql():
     dotenv = Dotenv()
     dotenv.load()
 
-  def dbconnect(self):
-    dbname = "example"
-    self.rdbh = psycopg2.connect("host=" + os.environ['DBHOST'] +" port=5432 dbname=" + dbname + " user="+ os.environ['DBUSER'] + " password=" + os.environ['DBPASSWORD'])
+  def beginTransaction(self):
+    sql = "BEGIN"
+    self.executeSQL(sql)
 
-  def executeSimpleSQL(self, sql):
-    with self.rdbh.cursor() as cur:
-      cur.execute(sql)
-
-  def dropExampleTable(self):
-    sql = "DROP TABLE example"
-    print(sql)
-    self.executeSimpleSQL(sql)
+  def createExampleType(self):
+    sql = "CREATE TYPE example_sex AS ENUM ('male', 'female')"
+    self.executeSQL(sql)
 
   def createExampleTable(self):
-    sql = "CREATE TYPE sex AS ENUM ('male', 'female');CREATE TABLE example (id SERIAL NOT NULL, name VARCHAR(255) NOT NULL, sex sex DEFAULT NULL, created_at timestamp DEFAULT NOW(), updated_at timestamp DEFAULT NOW(), PRIMARY KEY (id));"
-    print(sql)
-    self.executeSimpleSQL(sql)
+    sql = '''\
+CREATE TABLE example (
+  id SERIAL NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  sex example_sex DEFAULT NULL,
+  created_at timestamp with time zone DEFAULT NOW(),
+  updated_at timestamp with time zone DEFAULT NOW(),
+  PRIMARY KEY (id)
+);
+CREATE INDEX created_at_idx ON example(created_at);
+CREATE INDEX name_idx ON example(name);
+CREATE INDEX updated_at_idx ON example(updated_at);
+'''
+    self.executeSQL(sql)
 
   def createExampleData(self):
     datas = [
@@ -32,25 +38,63 @@ class Psql():
     ]
     with self.rdbh.cursor() as cur:
       for data in datas:
-        print(data[1])
         cur.execute("INSERT INTO example (name, sex) VALUES (%s, %s)", [data[0], data[1]])
 
+  def dbclose(self):
+    self.rdbh.close()
+
+  def dbconnect(self):
+    dbname = "example"
+    timezone = "Asia/Tokyo"
+    self.rdbh = psycopg2.connect("host=" + os.environ['DBHOST'] +" port=5432 dbname=" + dbname + " user="+ os.environ['DBUSER'] + " password=" + os.environ['DBPASSWORD'])
+    self.executeSQL("SET TIME ZONE '"+ timezone + "'")
+
+  def dropExampleTable(self):
+    sql = "DROP TABLE IF EXISTS example"
+    self.executeSQL(sql)
+
+  def dropExampleType(self):
+    sql = "DROP TYPE IF EXISTS example_sex"
+    self.executeSQL(sql)
+
+  def endTransaction(self):
+    self.rdbh.commit()
+
+  def executeSQL(self, sql):
+    with self.rdbh.cursor() as cur:
+      cur.execute(sql)
+
+  def rollback(self):
+    self.rdbh.rollback()
+
   def selectFromExampleTable(self):
-    sql = "SELECT id, name, sex, DATE_TRUNC('sec', created_at), DATE_TRUNC('sec', updated_at) FROM example"
-    print(sql)
+    sql = "SELECT id, name, sex, to_char(created_at, 'YYYY/MM/DD HH24:MI:SS') AS created_at, to_char(updated_at, 'YYYY/MM/DD HH24:MI:SS') AS updated_at FROM example"
     with self.rdbh.cursor() as cur:
       cur.execute(sql)
       for [id, name, sex, created_at, updated_at] in cur:
         print("\t".join([str(id), name, sex, str(created_at), str(updated_at)]))
 
-  def dbclose(self):
-    self.rdbh.close()
-
 if __name__ == "__main__":
   psql = Psql()
   psql.dbconnect()
-  psql.createExampleTable()
-  psql.createExampleData()
-  psql.selectFromExampleTable()
-  psql.dropExampleTable()
-  psql.dbclose()
+  try:
+    psql.beginTransaction()
+    try:
+      psql.dropExampleTable()
+      psql.dropExampleType()
+      psql.createExampleType()
+      psql.createExampleTable()
+      psql.createExampleData()
+      psql.selectFromExampleTable()
+      psql.dropExampleTable()
+      psql.dropExampleType()
+      psql.endTransaction()
+    except Exception as e:
+      psql.rollback()
+      print(e)
+    finally:
+      psql.dbclose()
+  except Exception as e:
+    print(e)
+  finally:
+    psql.dbclose()
