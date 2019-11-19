@@ -129,6 +129,9 @@ class ExecuteTest:
                     elif root == "associative_array":
                         assert result == "January\nFebruary\nMarch\n"
                         self.asserted_num += 1
+                    elif root == "check_dir_existence":
+                        assert re.search(r"^Found: .*?/a_dir\nNot Found: .*?/b_dir\n$", result), "Not expected output"
+                        self.asserted_num += 1
                     elif root == "check_file_existence":
                         assert re.search(r"^Found: .*?/a.txt\nNot Found: .*?/b.txt\n$", result), "Not expected output"
                         self.asserted_num += 1
