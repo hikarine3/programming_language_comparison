@@ -67,7 +67,6 @@ class ExecuteTest:
                         if root == "doctor_class":
                             cm += "cd ../human_class;javac Human.java;mv -f Human.class ../doctor_class;cd ../doctor_class;"
                         else:
-                            print("No=" + root)
                             cm += ""
                         cm += "javac " + file + "; java " + execute_file 
                     elif file.endswith(".js"):
@@ -129,6 +128,9 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == "associative_array":
                         assert result == "January\nFebruary\nMarch\n"
+                        self.asserted_num += 1
+                    elif root == "check_file_existence":
+                        assert re.search(r"^Found: .*?/a.txt\nNot Found: .*?/b.txt\n$", result), "Not expected output"
                         self.asserted_num += 1
                     elif root == "convert_charcode":
                         assert result == "%BC%D6\n車\n"

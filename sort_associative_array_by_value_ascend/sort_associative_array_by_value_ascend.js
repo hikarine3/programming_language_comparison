@@ -1,5 +1,9 @@
-const example_array = [ ["January", 1], ["December", 12], ["March", 3] ];
-const sorted_array = new Map( example_array.sort((a, b) => {a = a[1]; b = b[1]; return a - b;}) );
-for (const [key, value] of sorted_array.entries()) {
-  console.log(key + ' => ' + value);
+const example_array = {"January":1, "December":12, "March":3};
+var keys=[];
+for(var key in example_array) {
+  keys.push(key);
+}
+keys.sort((a,b)=>{return example_array[a]-example_array[b];});
+for(var key of keys) {
+  console.log(key + " => " + example_array[key]);
 }
