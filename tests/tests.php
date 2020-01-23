@@ -10,9 +10,13 @@ if (isGzipResponse($http_response_header)) {
 }
 $matches = [];
 if( preg_match('!<title>(.*?)</title>!is', $content, $matches) ) {
-    print $matches[1]."\n";
+  assert(preg_match('!yahoo!is', $matches[1]) ,"yahoo is not included in title");
+  print("OK\n");
 }
-
+else{
+  die("Failed to get content");
+}
+ 
 function isGzipResponse($headers) {
     foreach($headers as $header) {
         if (stristr($header, 'content-encoding') and stristr($header, 'gzip')) {

@@ -230,6 +230,10 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == "regex_match":
                         assert result == "Found target\n"
+                        self.asserted_num += 1
+                    elif root == "regex_match_store":
+                        assert result == "1=apple\n2=orange\n"
+                        self.asserted_num += 1
                     elif root == "system":
                         assert re.search(r"\d\d\d\d", result), "system wasn't executed correctly."
                         self.asserted_num += 1
@@ -247,6 +251,12 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == "sort_associative_array_by_value_descend":
                         assert result == "December => 12\nMarch => 3\nJanuary => 1\n", "Result is not expected"
+                        self.asserted_num += 1
+                    elif root == "tests":
+                        assert result == "OK\n"
+                        self.asserted_num += 1
+                    elif root == "to_fixed":
+                        assert result == "2.12\n"
                         self.asserted_num += 1
                     elif root == "unescape":
                         assert result == "toyota 車\n"
