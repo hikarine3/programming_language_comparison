@@ -21,7 +21,7 @@ class ExecuteTest:
             root = root.rstrip("/")
             for file in files:
                 print(file)
-                if re.search(r"\.(c|cpp|cs|go|java|js|mjs|php|pl|pm|py|rb|sh)$", file) and not re.search("executeTest", file):
+                if re.search(r"\.(c|cpp|cs|go|java|js|mjs|php|pl|pm|py|rb|rs|sh)$", file) and not re.search("executeTest", file):
                     root = re.sub("^./", "", root)
                     cm = "cd " + root + ";"
                     if file.endswith(".c"):
@@ -81,6 +81,9 @@ class ExecuteTest:
                         cm += "python " + file
                     elif file.endswith(".rb"):
                         cm += "ruby " + file
+                    elif file.endswith(".rs"):
+                        execute_file = file.replace(r".rs", "")
+                        cm += "rustc " + file +"; ./" + execute_file
                     elif file.endswith(".sh"):
                         cm += "chmod 755 " + file + ";./" + file
                     else:
