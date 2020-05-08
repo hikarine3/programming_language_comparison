@@ -24,6 +24,7 @@ class ExecuteTest:
                 if re.search(r"\.(c|cpp|cs|go|java|js|mjs|php|pl|pm|py|rb|rs|sh)$", file) and not re.search("executeTest", file):
                     root = re.sub("^./", "", root)
                     cm = "cd " + root + ";"
+                    found_toml = 0
                     if file.endswith(".c"):
                         execute_file = file.replace(r".c", "")
                         cm += "cc -o " + execute_file + " " + file +"; ./" + execute_file
@@ -83,7 +84,11 @@ class ExecuteTest:
                         cm += "ruby " + file
                     elif file.endswith(".rs"):
                         execute_file = file.replace(r".rs", "")
-                        cm += "rustc " + file +"; ./" + execute_file
+                        if os.path.exists(root + "/Cargo.toml"):
+                            cm += "cargo run -q"
+                            found_toml += 1
+                        else:
+                            cm += "rustc " + file +"; ./" + execute_file
                     elif file.endswith(".sh"):
                         cm += "chmod 755 " + file + ";./" + file
                     else:
@@ -105,6 +110,11 @@ class ExecuteTest:
 
                     if file.endswith(".c") or file.endswith(".cpp") or file.endswith(".cs") or file.endswith(".go"):
                         cm += ";rm " + execute_file + ";"
+                    elif file.endswith(".rs"):
+                        if found_toml:
+                            cm += ";rm -rf target/;"
+                        else:
+                            cm += ";rm " + execute_file + ";"
                     elif file.endswith(".java"):
                         cm += ";rm *.class;"
                     else:
@@ -131,6 +141,9 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == "associative_array":
                         assert result == "January\nFebruary\nMarch\n"
+                        self.asserted_num += 1
+                    elif root == "CaplitalizeOnlyHeads":
+                        assert result == " Can You Caplitalize?\n"
                         self.asserted_num += 1
                     elif root == "check_dir_existence":
                         assert re.search(r"^Found: .*?/a_dir\nNot Found: .*?/b_dir\n$", result), "Not expected output"
@@ -173,6 +186,7 @@ class ExecuteTest:
                         self.asserted_num += 1
                     elif root == "array_printer":
                         assert result == "3\n1\n2\n"
+                        self.asserted_num += 1
                     elif root == "ascend_sort_array":
                         assert result == "1\n2\n3\n"
                         self.asserted_num += 1
@@ -211,8 +225,12 @@ class ExecuteTest:
                     elif root == "output_to_file_and_read_lines":
                         assert result == "Hello World!\n\nAdditional line\n3\n"
                         self.asserted_num += 1
+                    elif root == "MkdirChmodRmdir":
+                        assert result == "mkdir\nchmod\nrmdir\n"
+                        self.asserted_num += 1
                     elif root == "split_string":
                         assert result == "a\nb\nc\n"
+                        self.asserted_num += 1
                     elif root == "mysqlManipulator":
                         assert re.search(r"1\tname1\tmale\t\d+/\d+/\d+ \d+:\d+:\d+\t\d+/\d+/\d+ \d+:\d+:\d+\n2\tname2\tfemale\t\d+/\d+/\d+ \d+:\d+:\d+\t\d+/\d+/\d+ \d+:\d+:\d+$", result), "Result is not expected format"
                         self.asserted_num += 1

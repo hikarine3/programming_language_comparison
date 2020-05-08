@@ -1,0 +1,10 @@
+[package]
+name = "caplitalize_only_heads"
+version = "0.0.1"
+
+[dependencies]
+inflections = "*"
+
+[[bin]]
+name = "caplitalize_only_heads"
+path = "CaplitalizeOnlyHeads.rs"
