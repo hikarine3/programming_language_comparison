@@ -16,3 +16,5 @@ Other languages are covering some of cases.
 * Go
 * Java
 * PHP
+
+python executeTest.py

@@ -285,6 +285,18 @@ class ExecuteTest:
                     else:
                         assert "Test is not prepared for this"
                         exit
+
+    def createHtml(self):
+        print("createHtml")
+        dir = 'public'
+        langs = ['ja', 'en', 'zh']
+        for lang in langs:
+            last_dir = dir + '/' + lang
+            os.mkdir(last_dir)
+            html = last_dir + '/index.html'
+            with open(html, 'w') as wfh:
+                wfh.print('<html><body></body></html>')
+
     def reportTest(self):
         print("Report test result...")
         print("Asserted: " + str(self.asserted_num))
@@ -329,8 +341,10 @@ if __name__ == "__main__":
         dir = argvs[1]
     else:
         pass
-    print("executing...")
+    print("Finding in " + dir)
     executeTest = ExecuteTest({"dir": dir})
+    executeTest.createHtml()
+
     executeTest.executeTest()
     executeTest.reportTest()
 #    executeTest.createHtml()
