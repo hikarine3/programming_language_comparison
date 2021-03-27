@@ -1,0 +1,10 @@
+[package]
+name = "x_days_ago"
+version = "0.0.1"
+
+[dependencies]
+chrono = "0.4"
+
+[[bin]]
+name = "x_days_ago"
+path = "x_days_ago.rs"

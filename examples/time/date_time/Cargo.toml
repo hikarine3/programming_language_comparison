@@ -1,0 +1,10 @@
+[package]
+name = "date_time"
+version = "0.0.1"
+
+[dependencies]
+chrono = "0.4"
+
+[[bin]]
+name = "date_time"
+path = "date_time.rs"
