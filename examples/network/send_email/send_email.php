@@ -8,12 +8,12 @@ class Mailer {
   private $bcc = "";
   private $cc = "";
   private $body = "";
-  private $smtp_server = ""
-  private $smtp_port = ""
-  private $smtp_user = ""
-  private $smtp_password = ""  
+  private $smtp_server = "";
+  private $smtp_port = "";
+  private $smtp_user = "";
+  private $smtp_password = "";  
 
-  public function __construct($opt) {
+  public function constructor($opt) {
     if (isset($opt['to_email'])) {
       $this->to_email = $opt['to_email'];
     }
