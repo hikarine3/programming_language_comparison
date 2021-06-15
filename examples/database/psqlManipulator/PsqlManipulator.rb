@@ -29,20 +29,21 @@ class PsqlManipulator
   end
 
   def createExampleTable
-    sql = '''
+    sqls = ['''\
 CREATE TABLE example (
-  id SERIAL NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR(255) NOT NULL,
-  sex example_sex DEFAULT NULL,
-  created_at timestamp with time zone DEFAULT NOW(),
-  updated_at timestamp with time zone DEFAULT NOW(),
-  PRIMARY KEY (id)
-);
-CREATE INDEX created_at_idx ON example(created_at);
-CREATE INDEX name_idx ON example(name);
-CREATE INDEX updated_at_idx ON example(updated_at);
-'''
-    executeSQL(sql)
+  sex VARCHAR(15) DEFAULT NULL,
+  created_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
+  updated_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime'))
+)
+''',
+      'CREATE INDEX created_at_idx ON example(created_at)',
+      'CREATE INDEX name_idx ON example(name)',
+      'CREATE INDEX updated_at_idx ON example(updated_at)'
+    ]
+    for sql in sqls:
+      self.executeSQL(sql)
   end
 
   def createExampleData

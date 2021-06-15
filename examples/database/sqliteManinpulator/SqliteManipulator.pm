@@ -7,6 +7,11 @@ sub new() {
   return bless $self;
 }
 
+sub init(){
+  my $self = shift;
+  $self->{'database'} = "/tmp/example.sqlite";
+}
+
 sub beginTransaction(){
   my $self = shift;
   my $sql = "BEGIN";
@@ -28,19 +33,19 @@ sub createExampleData(){
 
 sub createExampleTable() {
   my $self = shift;
-  my $sql = <<EOF;
-CREATE TABLE example (
+  my @sqls = ("CREATE TABLE example (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR(255) NOT NULL,
   sex VARCHAR(15) DEFAULT NULL,
   created_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
   updated_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime'))
-);
-CREATE INDEX created_at_idx ON example(created_at);
-CREATE INDEX name_idx ON example(name);
-CREATE INDEX updated_at_idx ON example(updated_at);
-EOF
-  $self->executeSQL($sql);
+)",
+"CREATE INDEX created_at_idx ON example(created_at)",
+"CREATE INDEX name_idx ON example(name)",
+"CREATE INDEX updated_at_idx ON example(updated_at)");
+  foreach my $sql (@sqls){
+    $self->executeSQL($sql);
+  }
 }
 
 
@@ -51,20 +56,11 @@ sub dbclose(){
 
 sub dbconnect(){
   my $self = shift;
-  my $database = "example.sqlite";
-  my $timezone = "Asia/Tokyo";
-  $self->{'rdbh'} = DBI->connect("DBI:SQLite:database=".$database) or die "Failed to connect to db.";
-  # my $sql = "SET TIME ZONE '".$timezone."'";
-  # $self->{'rdbh'}->do($sql);
+  unlink($self->{'database'}) if -f $self->{'database'};
+  $self->{'rdbh'} = DBI->connect("DBI:SQLite:database=".$self->{'database'}) or die "Failed to connect to db: ".$self->{'database'};
 }
 
-sub dropExampleTable(){
-  my $self = shift;
-  my $sql = "DROP TABLE IF EXISTS example";
-  $self->executeSQL($sql);
-}
-
-sub endTransaction(){
+sub commit(){
   my $self = shift;
   $self->{'rdbh'}->commit();
 }
@@ -87,16 +83,15 @@ sub selectFromExampleTable(){
 }
 
 if ($0 eq __FILE__) {
-  my $rdb = new SqliteManipulator();
-  $rdb->dbconnect();
-  $rdb->beginTransaction();
-  $rdb->dropExampleTable();
-  $rdb->createExampleTable();
-  $rdb->createExampleData();
-  $rdb->selectFromExampleTable();
-  $rdb->dropExampleTable();
-  $rdb->endTransaction();
-  $rdb->dbclose();
+  my $pro = new SqliteManipulator();
+  $pro->init();
+  $pro->dbconnect();
+  $pro->beginTransaction();
+  $pro->createExampleTable();
+  $pro->createExampleData();
+  $pro->selectFromExampleTable();
+  $pro->commit();
+  $pro->dbclose();
 }
 else{
   1;

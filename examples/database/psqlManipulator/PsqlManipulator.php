@@ -87,6 +87,10 @@ EOF;
       }
     }
   }
+
+  function rollback(){
+    $this->rdbh->rollback();
+  }
   
   function selectFromExampleTable(){
     $sql = "SELECT id, name, sex, to_char(created_at, 'YYYY/MM/DD HH24:MI:SS') AS created_at, to_char(updated_at, 'YYYY/MM/DD HH24:MI:SS') AS updated_at FROM example";
@@ -99,36 +103,36 @@ EOF;
 }
 
 if ( !isset(debug_backtrace()[0]) ) {
-  $rdb = new PsqlManipulator();
+  $pro = new PsqlManipulator();
   try{
-    $rdb->dbconnect();
+    $pro->dbconnect();
   } catch(PDOException $e){
     echo $e->getMessage();
     exit(1);
   }
 
   try{
-    $rdb->beginTransaction();
+    $pro->beginTransaction();
   } catch(PDOException $e){
     echo $e->getMessage();
-    $rdb->dbclose();
+    $pro->dbclose();
     exit(1);
   }
 
   try {
-    $rdb->dropExampleTable();
-    $rdb->dropExampleType();
-    $rdb->createExampleType();
-    $rdb->createExampleTable();
-    $rdb->createExampleData();
-    $rdb->selectFromExampleTable();
-    $rdb->dropExampleTable();
-    $rdb->dropExampleType();
-    $rdb->endTransaction();
-    $rdb->dbclose();
+    $pro->dropExampleTable();
+    $pro->dropExampleType();
+    $pro->createExampleType();
+    $pro->createExampleTable();
+    $pro->createExampleData();
+    $pro->selectFromExampleTable();
+    $pro->dropExampleTable();
+    $pro->dropExampleType();
+    $pro->endTransaction();
+    $pro->dbclose();
   } catch(PDOException $e){
-    $rdb->rollback();
-    $rdb->dbclose();
+    $pro->rollback();
+    $pro->dbclose();
     throw $e;
   }
 }
