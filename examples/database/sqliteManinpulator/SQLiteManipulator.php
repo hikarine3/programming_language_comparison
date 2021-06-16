@@ -1,6 +1,4 @@
 <?php
-//require_once __DIR__ . '/vendor/autoload.php';
-
 class SQLiteManipulator {
   private $rdbh;
   public function __construct($opt=[]) {
